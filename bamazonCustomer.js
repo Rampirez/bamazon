@@ -24,22 +24,21 @@ connection.connect(function(err) {
 
 function showItems() {
   console.log("Selecting all products...\n");
+  var itemsString;
   connection.query("SELECT * FROM products", function(err, res) {
     if (err) throw err;
     // Log all results of the SELECT statement
+    
     for (var i = 0; i < res.length; i++) {
-      console.log(
-        res[i].product_name +
-          " || " +
-          res[i].department_name +
-          " || Price:" +
-          res[i].price +
-          " || Stock:" +
-          res[i].stock_quantity
-      );
+        console.log(res[i].product_name +
+        " || " +
+        res[i].department_name +
+        " || Price:" +
+        res[i].price +
+        " || Stock:" +
+        res[i].stock_quantity + "\n");
     }
   });
-  startProgram();
 }
 
 function buyItems() {
@@ -78,7 +77,6 @@ function processTransaction(quantity, itemName) {
   connection.query(
     "SELECT * FROM products WHERE product_name = '" + itemName + "'",
     function(err, res) {
-        console.log(res[0]);
       if (err) throw err;
       if (res[0].stock_quantity > quantity) {
         var newStockQ = res[0].stock_quantity - quantity;
@@ -123,11 +121,14 @@ function startProgram() {
       console.log(inquirerResponse.choice);
       if (inquirerResponse.choice == "SHOW ITEMS") {
         showItems();
+        startProgram();
       } else if (inquirerResponse.choice == "BUY ITEMS") {
         buyItems();
-      } else {
+      } else if(inquirerResponse.choice == "DONE") {
         console.log("All done!");
         connection.end();
       }
+      
     });
+    
 }
